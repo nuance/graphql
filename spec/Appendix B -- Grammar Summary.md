@@ -84,13 +84,14 @@ EscapedUnicode :: u /[0-9A-Fa-f]{4}/
 EscapedCharacter :: one of `"` \ `/` b f n r t
 
 
-## Query Document
+## Document
 
 Document : Definition+
 
 Definition :
   - OperationDefinition
   - FragmentDefinition
+  - TypeDefinition
 
 OperationDefinition :
   - SelectionSet
@@ -171,3 +172,42 @@ NonNullType :
 Directives : Directive+
 
 Directive : @ Name Arguments?
+
+TypeDefinition :
+  - ObjectTypeDefinition
+  - InterfaceTypeDefinition
+  - UnionTypeDefinition
+  - ScalarTypeDefinition
+  - EnumTypeDefinition
+  - InputObjectTypeDefinition
+  - TypeExtensionDefinition
+
+ObjectTypeDefinition : type Name ImplementsInterfaces? { FieldDefinition+ }
+
+ImplementsInterfaces : implements NamedType+
+
+FieldDefinition : Name ArgumentsDefinition? : Type
+
+ArgumentsDefinition : ( InputValueDefinition+ )
+
+InputValueDefinition : Name : Type DefaultValue?
+
+InterfaceTypeDefinition : interface Name { FieldDefinition+ }
+
+UnionTypeDefinition : union Name = UnionMembers
+
+UnionMembers :
+  - NamedType
+  - UnionMembers | NamedType
+
+ScalarTypeDefinition : scalar Name
+
+EnumTypeDefinition : enum Name { EnumValueDefinition+ }
+
+EnumValueDefinition : EnumValue
+
+EnumValue : Name
+
+InputObjectTypeDefinition : input Name { InputValueDefinition+ }
+
+TypeExtensionDefinition : extend ObjectTypeDefinition
